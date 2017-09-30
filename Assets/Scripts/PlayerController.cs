@@ -18,12 +18,19 @@ public class PlayerController : MonoBehaviour
 	//Rigidbody2D reference
 	private Rigidbody2D rb;
 
+	//SpriteRenderer
+	private SpriteRenderer sr;
+	private SpriteRenderer[] colliders;
+	public int sortOrder;
+
 	public Collider2D[] attackHitboxes;
 
 	// Use this for initialization
 	void Awake () 
 	{
 		rb = GetComponent<Rigidbody2D> ();
+		sr = GetComponent<SpriteRenderer> ();
+		colliders = GetComponentsInChildren<SpriteRenderer> ();
 	}
 	
 	// Update is called once per frame
@@ -58,6 +65,19 @@ public class PlayerController : MonoBehaviour
 			Mathf.Clamp(rb.position.x, xMin, xMax),
 			Mathf.Clamp(rb.position.y, yMin, yMax)
 		);
+
+		//Updates the order in the plane based on y-position
+		updateSortOrder ();
+	}
+
+	private void updateSortOrder()
+	{
+		int yPos = (int) transform.position.y;
+		sortOrder = yPos;
+		sr.sortingOrder = sortOrder;
+		foreach (SpriteRenderer s in colliders){
+			s.sortingOrder = sortOrder;
+		}
 	}
 
 	private Collider2D Attack (Collider2D col)
